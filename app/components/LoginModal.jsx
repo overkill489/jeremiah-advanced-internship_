@@ -2,6 +2,10 @@ import React from "react";
 import { FaUser } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoCloseSharp } from "react-icons/io5";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 const LoginModal = ({
   creatingAccount,
@@ -14,7 +18,7 @@ const LoginModal = ({
   setPassword,
   setEmail,
   setCreatingAccount,
-  auth
+  auth,
 }) => {
   return (
     <div className="w-full z-10 fixed inset-0 flex items-center justify-center bg-gray-500/50">
@@ -100,7 +104,7 @@ const LoginModal = ({
           </button>
         )}
         <button
-          onClick={() => setCreatingAccount(true)}
+          onClick={() => setCreatingAccount(!creatingAccount)}
           className="cursor-pointer h-10 text-center bg-[#f1f6f4] text-[#116be9] w-full "
         >
           {creatingAccount

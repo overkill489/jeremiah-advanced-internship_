@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  signInAnonymously,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { auth } from "../firebase";
 import LoginModal from "../components/LoginModal";
 import { useRouter } from "next/navigation";
@@ -44,6 +50,7 @@ const AppLayout = ({ children }) => {
     try {
       await signInWithPopup(auth, provider);
       setLoginOpen(false);
+      router.push("/for-you");
       console.log("Google login successful!");
     } catch (error) {
       console.log(error);
@@ -71,6 +78,7 @@ const AppLayout = ({ children }) => {
       <Footer />
       {loginOpen && (
         <LoginModal
+          auth={auth}
           setLoginOpen={setLoginOpen}
           creatingAccount={creatingAccount}
           handleGuestLogin={handleGuestLogin}
