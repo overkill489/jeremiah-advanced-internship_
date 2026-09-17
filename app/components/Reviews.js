@@ -1,6 +1,11 @@
+"use client"
+
 import { BsStarFill } from "react-icons/bs";
+import { useLogin } from "../context/AuthContext";
 
 export default function Reviews() {
+  const { setLoginOpen } = useLogin();
+
   return (
     <section id="reviews">
       <div className="max-w-5xl w-full mx-auto px-0 py-6">
@@ -77,7 +82,7 @@ export default function Reviews() {
             </div>
           </div>
           <div className="flex justify-center">
-            <button className="bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-sm text-base transition-colors duration-300 hover:bg-[#26a862] cursor-pointer flex items-center justify-center min-w-[180] max-w-[500]">
+            <button onClick={() => setLoginOpen(true)} className="bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-sm text-base transition-colors duration-300 hover:bg-[#26a862] cursor-pointer flex items-center justify-center min-w-[180] max-w-[500]">
               Login
             </button>
           </div>
