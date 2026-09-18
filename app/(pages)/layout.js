@@ -12,16 +12,19 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import LoginModal from "../components/LoginModal";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { AuthProvider } from "../context/AuthContext";
+import LoggedIn from "../components/LoggedIn";
 
 const AppLayout = ({ children }) => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [user, setUser] = useState(null);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
+  const pathname = usePathname();
+  const hideLayout = ["/for-you", "/settings"].some((p) => pathname.startsWith(p))
+  const hideLayout2 = pathname.startsWith("/")
 
   const router = useRouter();
 
@@ -73,9 +76,14 @@ const AppLayout = ({ children }) => {
 
   return (
     <div>
-      <Navbar setLoginOpen={setLoginOpen} user={user} auth={auth} />
+      {!hideLayout && (
+        <Navbar setLoginOpen={setLoginOpen} user={user} auth={auth} />
+      )}
+
+      {!hideLayout2 && (<LoggedIn />)}
+
       <AuthProvider value={{ setLoginOpen }}>{children}</AuthProvider>
-      <Footer />
+      {!hideLayout && <Footer />}
       {loginOpen && (
         <LoginModal
           auth={auth}

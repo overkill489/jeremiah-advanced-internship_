@@ -1,7 +1,5 @@
-import React from "react";
-
-const ForYou = () => {
-  return <div>For you page</div>;
-};
-
-export default ForYou;
+export default function ForYou() {
+    return(
+        <div>For you page</div>
+    )
+}

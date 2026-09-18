@@ -3,8 +3,8 @@ import Landing from "../components/Landing";
 import Numbers from "../components/Numbers";
 import Reviews from "../components/Reviews";
 
-
 export default function Home() {
+
   return (
     <div>
       <Landing />

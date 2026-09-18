@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 const LoginModal = ({
   creatingAccount,
@@ -20,6 +21,8 @@ const LoginModal = ({
   setCreatingAccount,
   auth,
 }) => {
+  const router = useRouter();
+
   return (
     <div className="w-full z-10 fixed inset-0 flex items-center justify-center bg-gray-500/50">
       <div className="relative max-w-98 bg-white rounded-lg shadow-md">
@@ -66,6 +69,9 @@ const LoginModal = ({
                 }
 
                 setLoginOpen(false);
+                router.push("/for-you")
+                
+                
               } catch (error) {
                 console.log(error);
               }
