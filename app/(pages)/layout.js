@@ -15,6 +15,8 @@ import LoginModal from "../components/LoginModal";
 import { useRouter, usePathname } from "next/navigation";
 import { AuthProvider } from "../context/AuthContext";
 import LoggedIn from "../components/LoggedIn";
+import SideBar from "../components/SideBar";
+import SearchBar from "../components/SearchBar";
 
 const AppLayout = ({ children }) => {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -23,9 +25,10 @@ const AppLayout = ({ children }) => {
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
   const pathname = usePathname();
-  const hideLayout = ["/for-you", "/settings"].some((p) => pathname.startsWith(p))
-  const hideLayout2 = pathname.startsWith("/")
-
+  const hideLayout = ["/for-you", "/settings"].some((p) =>
+    pathname.startsWith(p),
+  );
+  const hideSecondaryLayout = pathname.startsWith("/");
   const router = useRouter();
 
   useEffect(() => {
@@ -80,9 +83,17 @@ const AppLayout = ({ children }) => {
         <Navbar setLoginOpen={setLoginOpen} user={user} auth={auth} />
       )}
 
-      {!hideLayout2 && (<LoggedIn />)}
+      {!hideSecondaryLayout && <LoggedIn />}
 
-      <AuthProvider value={{ setLoginOpen }}>{children}</AuthProvider>
+      <AuthProvider value={{ setLoginOpen }}>
+        {!(pathname === "/") && (
+          <>
+            <SideBar />
+            <SearchBar />
+          </>
+        )}
+        {children}
+      </AuthProvider>
       {!hideLayout && <Footer />}
       {loginOpen && (
         <LoginModal

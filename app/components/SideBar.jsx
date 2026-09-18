@@ -12,28 +12,28 @@ export default function SideBar() {
             </div>
             <div className="flex flex-col justify-between h-[calc(100vh-60px)] pb-5 overflow-y-auto">
                 <div className="flex flex-col  mt-10" >
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="/for-you" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <FaHome className="w-6 h-6"/>
                         </div>
                         <div className="text">For you</div>
                     </a>
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="/my-library" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <CiBookmark className="w-6 h-6"/>
                         </div>
                         <div className="text">My Library</div>
                     </a>
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-not-allowed transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <FaPenAlt className="w-6 h-6"/>
                         </div>
                         <div className="text">Highlights</div>
                     </a>
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-not-allowed transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <IoBookSharp className="w-6 h-6"/>
@@ -42,14 +42,14 @@ export default function SideBar() {
                     </a>
                 </div>
                 <div className="">
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="/settings" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <CiSettings className="w-6 h-6"/>
                         </div>
                         <div className="text">Settings</div>
                     </a>
-                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+                    <a href="" className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-not-allowed transition-colors duration-300 hover:bg-[#f0efef]">
                         <div className=""/>
                         <div className="flex items-center justify-center mr-2">
                             <HiOutlineQuestionMarkCircle className="w-6 h-6"/>

@@ -1,4 +1,4 @@
-import SearchBar from "@/app/components/SearBar";
+import SearchBar from "@/app/components/SearchBar";
 import SideBar from "@/app/components/SideBar";
 import React from "react";
 
