@@ -25,7 +25,7 @@ const AppLayout = ({ children }) => {
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
   const pathname = usePathname();
-  const hideLayout = ["/for-you", "/settings"].some((p) =>
+  const hideLayout = ["/for-you", "/settings", "/my-library"].some((p) =>
     pathname.startsWith(p),
   );
   const hideSecondaryLayout = pathname.startsWith("/");
@@ -86,13 +86,18 @@ const AppLayout = ({ children }) => {
       {!hideSecondaryLayout && <LoggedIn />}
 
       <AuthProvider value={{ setLoginOpen }}>
-        {!(pathname === "/") && (
+        {pathname !== "/" ? (
           <>
             <SideBar />
-            <SearchBar />
+
+            <div className="ml-[200px]">
+              <SearchBar />
+              {children}
+            </div>
           </>
+        ) : (
+          children
         )}
-        {children}
       </AuthProvider>
       {!hideLayout && <Footer />}
       {loginOpen && (
