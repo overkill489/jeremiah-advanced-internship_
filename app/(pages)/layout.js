@@ -17,6 +17,7 @@ import { AuthProvider } from "../context/AuthContext";
 import LoggedIn from "../components/LoggedIn";
 import SideBar from "../components/SideBar";
 import SearchBar from "../components/SearchBar";
+import { userAgentFromString } from "next/server";
 
 const AppLayout = ({ children }) => {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -85,7 +86,7 @@ const AppLayout = ({ children }) => {
 
       {!hideSecondaryLayout && <LoggedIn />}
 
-      <AuthProvider value={{ setLoginOpen }}>
+      <AuthProvider value={{ setLoginOpen, user }}>
         {pathname !== "/" ? (
           <>
             <SideBar />

@@ -14,7 +14,8 @@ export default function Home() {
 
   return (
     <div>
-      <Landing setLoginOpen={setLoginOpen} user={user} auth={auth} />
+      {/* <Landing setLoginOpen={setLoginOpen} user={user} auth={auth} /> */}
+      <Landing />
       <Features />
       <Reviews />
       <Numbers />
