@@ -81,7 +81,6 @@ export default function ForYou() {
               We think you'll like these
             </div>
            {recommendedBooks.map((book) => (
-            <div className="flex overflow-x-auto gap-4 mb-8">
               <a
                 href=""
                 className="relative px-8 py-3 pt-3 rounded-sm max-w-52 w-full"
@@ -111,8 +110,8 @@ export default function ForYou() {
                   </div>
                 </div>
               </a>
-            </div>
            ))}
+           </div>
           </div>
         </div>
       </div>
