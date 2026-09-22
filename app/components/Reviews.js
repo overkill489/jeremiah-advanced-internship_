@@ -1,10 +1,20 @@
-"use client"
+"use client";
 
 import { BsStarFill } from "react-icons/bs";
 import { useLogin } from "../context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function Reviews() {
-  const { setLoginOpen } = useLogin();
+  const { user, setLoginOpen } = useLogin();
+
+  const handleAuthClick = async () => {
+    if (user) {
+      await signOut(auth);
+    } else {
+      setLoginOpen(true);
+    }
+  };
 
   return (
     <section id="reviews">
@@ -82,8 +92,11 @@ export default function Reviews() {
             </div>
           </div>
           <div className="flex justify-center">
-            <button onClick={() => setLoginOpen(true)} className="bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-sm text-base transition-colors duration-300 hover:bg-[#26a862] cursor-pointer flex items-center justify-center min-w-[180] max-w-[500]">
-              Login
+            <button
+              onClick={handleAuthClick}
+              className="bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-sm text-base transition-colors duration-300 hover:bg-[#26a862] cursor-pointer flex items-center justify-center min-w-[180] max-w-[500]"
+            >
+             {user ? "Logout" : "Login"}
             </button>
           </div>
         </div>

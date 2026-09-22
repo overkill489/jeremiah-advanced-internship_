@@ -32,9 +32,6 @@ export default function Landing() {
                 <br />
                 and even people who don’t like to read.
               </div>
-              {/* <button onClick={() => user ? logout() : navigate("/login")} className="cursor-pointer bg-[#2bd97c] text-[#032b41] w-full h-10 rounded text-lg transition-colors duration-300 hover:bg-[#209e5b] flex items-center justify-center min-w-44 max-w-72">
-               {user ? "Logout" : "Login"}
-              </button> */}
               <button onClick={handleAuthClick} className="cursor-pointer bg-[#2bd97c] text-[#032b41] w-full h-10 rounded text-lg transition-colors duration-300 hover:bg-[#209e5b] flex items-center justify-center min-w-44 max-w-72">
                {user ? "Logout" : "Login"}
               </button>

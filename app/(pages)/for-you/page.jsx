@@ -1,32 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CiClock2, CiStar } from "react-icons/ci";
 import { FaPlayCircle } from "react-icons/fa";
+
+import RecommendedBooks from "@/app/components/RecommendedBooks";
+import SuggestedBooks from "@/app/components/Suggested";
 
 export default function ForYou() {
   const [loading, setLoading] = useState(true);
 
   const [selectedBook, setSelectedBook] = useState(null);
-  const [recommendedBooks, setRecommendedBooks] = useState([])
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [suggestedBooks, setSuggestedBooks] = useState([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
+      //Selected Book
       const selectedResponse = await fetch(
         "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=selected",
       );
-      const selectedData = await selectedResponse.json();
 
+      const selectedData = await selectedResponse.json();
       setSelectedBook(selectedData[0]);
       setLoading(false);
-      console.log(selectedData);
 
+      // Recommended Books
+      const recommendedResponse = await fetch(
+        "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended",
+      );
 
-      const recommendedResponse = await fetch("https://us-central1-summaristt.cloudfunctions.net/getBooks?status=recommended")
-      const recommendedData = await recommendedResponse.json()
+      const recommendedData = await recommendedResponse.json();
+      setRecommendedBooks(recommendedData);
 
-      setRecommendedBooks(recommendedData)
-      console.log(recommendedData)
+      //Suggested Books
+      const suggestedResponse = await fetch(
+        "https://us-central1-summaristt.cloudfunctions.net/getBooks?status=suggested",
+      );
+
+      const suggestedData = await suggestedResponse.json();
+      setSuggestedBooks(suggestedData);
     };
 
     fetchBooks();
@@ -80,38 +92,20 @@ export default function ForYou() {
             <div className="font-light text-[#394547] mb-4">
               We think you'll like these
             </div>
-           {recommendedBooks.map((book) => (
-              <a
-                href=""
-                className="relative px-8 py-3 pt-3 rounded-sm max-w-52 w-full"
-              >
-                <figure className="w-44 h-44">
-                  <img src={book.imageLink} alt="" className="w-full h-full" />
-                </figure>
-                <div className="text-base font-bold text-[#032b41] mb-2">
-                 {book.title}
-                </div>
-                <div className="text-sm text-[#6b757b] font-light mb-2">
-                 {book.author}
-                </div>
-                <div className="text-sm text-[#394547] mb-2">{book.subTitle}</div>
-                <div className="flex gap-2">
-                  <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
-                    <div className="flex w-4 h-4">
-                      <CiClock2 className="w-full h-full" />
-                    </div>
-                    <div className="">03:24</div>
-                  </div>
-                  <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
-                    <div className="flex w-4 h-4">
-                      <CiStar className="w-full h-full" />
-                    </div>
-                    <div>{book.averageRating}</div>
-                  </div>
-                </div>
-              </a>
-           ))}
-           </div>
+            <div className="mb-8">
+              <RecommendedBooks recommendedBooks={recommendedBooks} />
+            </div>
+          </div>
+          <div>
+            <div className="text-xl font-bold text-[#032b41] mb-4">
+              Suggested Books
+            </div>
+            <div className="font-light text-[#394547] mb-4">
+              Browse Suggested books
+            </div>
+            <div className="mb-8">
+              <SuggestedBooks suggestedBooks={suggestedBooks} />
+            </div>
           </div>
         </div>
       </div>
