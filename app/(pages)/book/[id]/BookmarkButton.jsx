@@ -3,61 +3,47 @@
 import { useEffect, useState } from "react";
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import {
-  onAuthStateChanged,
-} from "firebase/auth";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { db, auth } from "@/app/firebase";
 
-export default function BookmarkButton({ book }) {
+export default function BookmarkButton({ book, bookId }) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setSaved(false);
-        return;
-      }
+    const checkSaved = async () => {
+      const user = auth.currentUser;
+
+      if (!user) return;
 
       const bookRef = doc(
         db,
         "users",
         user.uid,
         "savedBooks",
-        String(book.id)
+        String(bookId)
       );
 
-      try {
-        const bookSnapshot = await getDoc(bookRef);
+      const bookSnapshot = await getDoc(bookRef);
 
-        setSaved(bookSnapshot.exists());
-      } catch (error) {
-        console.error("Error checking saved book:", error);
+      if (bookSnapshot.exists()) {
+        setSaved(true);
       }
-    });
+    };
 
-    return () => unsubscribe();
-  }, [book.id]);
+    checkSaved();
+  }, [bookId]);
 
   const handleBookmark = async () => {
     const user = auth.currentUser;
 
-    if (!user) {
-      console.log("User is not logged in");
-      return;
-    }
+    if (!user) return;
 
     const bookRef = doc(
       db,
       "users",
       user.uid,
       "savedBooks",
-      String(book.id)
+      String(bookId)
     );
 
     try {
@@ -91,9 +77,7 @@ export default function BookmarkButton({ book }) {
       </div>
 
       <span>
-        {saved
-          ? "Saved to your Library"
-          : "Add title to My Library"}
+        {saved ? "Saved to your Library" : "Add title to My Library"}
       </span>
     </div>
   );

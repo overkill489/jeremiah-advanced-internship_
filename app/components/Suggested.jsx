@@ -32,10 +32,7 @@ export default function SuggestedBooks({ suggestedBooks }) {
       >
         <FaChevronLeft />
       </button>
-      <div
-        ref={emblaRef}
-        className="overflow-hidden mx-12"
-      >
+      <div ref={emblaRef} className="overflow-hidden mx-12">
         <div className="flex">
           {suggestedBooks.map((book) => (
             <Link
@@ -43,6 +40,11 @@ export default function SuggestedBooks({ suggestedBooks }) {
               key={book.id}
               className="relative flex-[0_0_208px] px-8 py-3 rounded-sm"
             >
+              {book.subscriptionRequired && (
+                <div className="absolute top-0 right-8 z-10 bg-[#032b41] text-white text-[10px] font-semibold px-2 py-1 rounded-full">
+                  Premium
+                </div>
+              )}
               <figure className="w-44 h-44">
                 <img
                   src={book.imageLink}
@@ -59,9 +61,7 @@ export default function SuggestedBooks({ suggestedBooks }) {
                 {book.author}
               </div>
 
-              <div className="text-sm text-[#394547] mb-2">
-                {book.subTitle}
-              </div>
+              <div className="text-sm text-[#394547] mb-2">{book.subTitle}</div>
 
               <div className="flex gap-2">
                 <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">

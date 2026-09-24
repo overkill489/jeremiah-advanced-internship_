@@ -26,11 +26,12 @@ const AppLayout = ({ children }) => {
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
   const pathname = usePathname();
-  const hideLayout = ["/for-you", "/settings", "/my-library", "/book"].some((p) =>
-    pathname.startsWith(p),
+  const hideLayout = ["/for-you", "/settings", "/my-library", "/book"].some(
+    (p) => pathname.startsWith(p),
   );
   const hideSecondaryLayout = pathname.startsWith("/");
   const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -89,10 +90,10 @@ const AppLayout = ({ children }) => {
       <AuthProvider value={{ setLoginOpen, user }}>
         {pathname !== "/" ? (
           <>
-            <SideBar />
+            <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
             <div className="ml-[200px]">
-              <SearchBar />
+              <SearchBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
               {children}
             </div>
           </>
