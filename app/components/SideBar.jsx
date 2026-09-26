@@ -1,5 +1,6 @@
 "use client";
 
+import { signOut } from "firebase/auth";
 import { CiBookmark, CiSettings } from "react-icons/ci";
 import { FaHome, FaPenAlt } from "react-icons/fa";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi";
@@ -7,7 +8,11 @@ import { IoIosLogOut } from "react-icons/io";
 import { IoBookSharp } from "react-icons/io5";
 import { usePathname } from "next/navigation";
 
-export default function SideBar({ isOpen, setIsOpen }) {
+export default function SideBar({
+  isOpen,
+  setIsOpen,
+  auth,
+}) {
   const pathname = usePathname();
 
   return (
@@ -34,19 +39,16 @@ export default function SideBar({ isOpen, setIsOpen }) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <a href="/" className="flex items-center justify-center h-14 pt-4 max-w-40 mx-auto">
-          <img
-            className="w-full h-10"
-            src="/assets/logo.png"
-            alt="Logo"
-          />
+        <a
+          href="/"
+          className="flex items-center justify-center h-14 pt-4 max-w-40 mx-auto"
+        >
+          <img className="w-full h-10" src="/assets/logo.png" alt="Logo" />
         </a>
 
         <div className="flex flex-col justify-between h-[calc(100vh-60px)] pb-5 overflow-y-auto">
-
           {/* Main Navigation */}
           <div className="flex flex-col mt-10">
-
             <a
               href="/for-you"
               onClick={() => setIsOpen(false)}
@@ -100,10 +102,8 @@ export default function SideBar({ isOpen, setIsOpen }) {
 
               <div>Explore</div>
             </a>
-
           </div>
           <div>
-
             <a
               href="/settings"
               onClick={() => setIsOpen(false)}
@@ -119,7 +119,7 @@ export default function SideBar({ isOpen, setIsOpen }) {
 
               <div>Settings</div>
             </a>
-
+  
             <a
               href=""
               className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-not-allowed transition-colors duration-300 hover:bg-[#f0efef]"
@@ -131,16 +131,19 @@ export default function SideBar({ isOpen, setIsOpen }) {
               <div>For you</div>
             </a>
 
-            <button className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]">
+            <button
+              onClick={() => {
+                signOut(auth);
+              }}
+              className="flex items-center pl-3 w-full h-14 text-[#032b41] mb-2 cursor-pointer transition-colors duration-300 hover:bg-[#f0efef]"
+            >
               <div className="flex items-center justify-center mr-2">
                 <IoIosLogOut className="w-6 h-6" />
               </div>
 
               <div>Logout</div>
             </button>
-
           </div>
-
         </div>
       </div>
     </>

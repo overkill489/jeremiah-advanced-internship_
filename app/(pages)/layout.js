@@ -90,7 +90,7 @@ const AppLayout = ({ children }) => {
       <AuthProvider value={{ setLoginOpen, user }}>
         {pathname !== "/" ? (
           <>
-            <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+            <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} auth={auth} />
 
             <div className="ml-[200px]">
               <SearchBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
