@@ -26,7 +26,7 @@ const AppLayout = ({ children }) => {
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
   const pathname = usePathname();
-  const hideLayout = ["/for-you", "/settings", "/my-library", "/book"].some(
+  const hideLayout = ["/for-you", "/settings", "/my-library", "/book", "/player"].some(
     (p) => pathname.startsWith(p),
   );
   const hideSecondaryLayout = pathname.startsWith("/");

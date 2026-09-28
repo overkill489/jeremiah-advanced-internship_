@@ -3,6 +3,7 @@ import { FaMicrophone, FaRegStar, FaStar } from "react-icons/fa";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { PiBookOpenText } from "react-icons/pi";
 import BookmarkButton from "./BookmarkButton";
+import Link from "next/link";
 
 export default async function BookPage({ params }) {
   const { id } = await params;
@@ -60,14 +61,14 @@ export default async function BookPage({ params }) {
               </div>
             </div>
             <div className="flex gap-4 mb-6">
-              <button className="flex items-center justify-center w-36 h-12 bg-[#032b41] text-white text-base rounded-sm cursor-pointer gap-2 transition-opacity duration-300 hover:opacity-70 ">
+              <Link href={`/player/${id}`} className="flex items-center justify-center w-36 h-12 bg-[#032b41] text-white text-base rounded-sm cursor-pointer gap-2 transition-opacity duration-300 hover:opacity-70 ">
                 <PiBookOpenText className="w-1/7 h-1/2" />
                 <span>Read</span>
-              </button>
-              <button className="flex items-center justify-center w-36 h-12 bg-[#032b41] text-white text-base rounded-sm cursor-pointer gap-2 transition-opacity duration-300 hover:opacity-70 ">
+              </Link>
+              <Link href={`/player/${id}`} className="flex items-center justify-center w-36 h-12 bg-[#032b41] text-white text-base rounded-sm cursor-pointer gap-2 transition-opacity duration-300 hover:opacity-70 ">
                 <FaMicrophone />
                 <span>Listen</span>
-              </button>
+              </Link>
             </div>
             <BookmarkButton book={book} bookId={id} />
             <div className="text-lg text-[#032b41] mb-4 font-semibold">
