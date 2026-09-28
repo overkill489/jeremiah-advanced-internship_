@@ -14,8 +14,6 @@ export default async function BookPage({ params }) {
 
   const book = await response.json();
 
-  console.log(book);
-
   return (
     <div className="w-full px-4 py-6">
       <div className="max-w-5xl mx-auto">
