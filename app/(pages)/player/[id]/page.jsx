@@ -43,17 +43,22 @@ export default function Player({ params }) {
         <div className="text-[#032b41] text-2xl border-b-2 border-[#e1e7ea] mb-8 pb-4 leading-relaxed">
           {book.title}
         </div>
-        <div className="whitespace-pre-line leading-relaxed text-[#032b41]">{book.summary}</div>
+        <div className="whitespace-pre-line leading-relaxed text-[#032b41]">
+          {book.summary}
+        </div>
       </div>
 
-      <div className="w-full h-20 mt-auto flex items center justify-between bg-[#042330] py-10 fixed bottom-0 left-0 z-50">
-      <audio ref={audioRef} src={book.audioLink} hidden />
-      <div className="flex gap-3">
-        <figure className="flex max-w-[48px]">
+      <div className="w-full mt-auto flex items center justify-between bg-[#042330] py-7 fixed bottom-0 left-0 z-50">
+        <audio ref={audioRef} src={book.audioLink} hidden />
+        <div className="flex gap-3">
+          <figure className="flex max-w-[48px]">
             <img className="w-full h-full" src={book.imageLink} alt="Book" />
-        </figure>
-
-      </div>
+          </figure>
+          <div className="text-white text-sm flex flex-col gap-1 justify-center">
+            <div className="">{book.title}</div>
+            <div className="">{book.author}</div>
+          </div>
+        </div>
         {/* <button onClick={skipBackward}>-10s</button>
 
         <button onClick={playPause}>Play</button>
