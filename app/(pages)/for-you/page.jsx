@@ -5,6 +5,7 @@ import { FaPlayCircle } from "react-icons/fa";
 
 import RecommendedBooks from "@/app/components/RecommendedBooks";
 import SuggestedBooks from "@/app/components/Suggested";
+import Link from "next/link";
 
 export default function ForYou() {
   const [loading, setLoading] = useState(true);
@@ -90,8 +91,8 @@ export default function ForYou() {
               </div>
             </div>
           ) : (
-            <a
-              href=""
+            <Link
+               href={`/book/${selectedBook.id}`}
               className="flex flex-col md:flex-row md:justify-between w-full lg:w-2/3 bg-[#fbefd6] rounded-md p-4 sm:p-6 mb-6 gap-5 md:gap-6"
             >
               <div className="text-[#032b41]  w-full md:w-2/5">
@@ -129,7 +130,7 @@ export default function ForYou() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           )}
           <div>
             <div className="text-xl font-bold text-[#032b41] mb-4">
