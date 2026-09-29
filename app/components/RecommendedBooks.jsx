@@ -25,10 +25,7 @@ export default function RecommendedBooks({ recommendedBooks }) {
       <button
         type="button"
         onClick={scrollPrev}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10
-                   w-10 h-10 rounded-full bg-white shadow-md
-                   flex items-center justify-center
-                   text-[#032b41]"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#032b41]"
       >
         <FaChevronLeft />
       </button>
@@ -81,10 +78,7 @@ export default function RecommendedBooks({ recommendedBooks }) {
       <button
         type="button"
         onClick={scrollNext}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10
-                   w-10 h-10 rounded-full bg-white shadow-md
-                   flex items-center justify-center
-                   text-[#032b41]"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#032b41]"
       >
         <FaChevronRight />
       </button>

@@ -4,47 +4,37 @@ import { useEffect, useState } from "react";
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth"; // import this
 import { db, auth } from "@/app/firebase";
 
 export default function BookmarkButton({ book, bookId }) {
   const [saved, setSaved] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkSaved = async () => {
-      const user = auth.currentUser;
-
-      if (!user) return;
-
-      const bookRef = doc(
-        db,
-        "users",
-        user.uid,
-        "savedBooks",
-        String(bookId)
-      );
-
-      const bookSnapshot = await getDoc(bookRef);
-
-      if (bookSnapshot.exists()) {
-        setSaved(true);
+    // Listen for Firebase auth readiness
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      
+      if (currentUser) {
+        const bookRef = doc(db, "users", currentUser.uid, "savedBooks", String(bookId));
+        const bookSnapshot = await getDoc(bookRef);
+        if (bookSnapshot.exists()) {
+          setSaved(true);
+        }
       }
-    };
+    });
 
-    checkSaved();
+    return () => unsubscribe();
   }, [bookId]);
 
   const handleBookmark = async () => {
-    const user = auth.currentUser;
+    if (!user) {
+      alert("Please log in to save books!");
+      return;
+    }
 
-    if (!user) return;
-
-    const bookRef = doc(
-      db,
-      "users",
-      user.uid,
-      "savedBooks",
-      String(bookId)
-    );
+    const bookRef = doc(db, "users", user.uid, "savedBooks", String(bookId));
 
     try {
       if (saved) {
@@ -55,7 +45,6 @@ export default function BookmarkButton({ book, bookId }) {
           ...book,
           savedAt: new Date(),
         });
-
         setSaved(true);
       }
     } catch (error) {

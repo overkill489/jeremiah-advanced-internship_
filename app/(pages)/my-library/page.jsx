@@ -22,54 +22,41 @@ export default function MyLibrary() {
     watchDrag: true,
   });
 
-  const scrollPrev = () => {
-    emblaApi?.scrollPrev();
-  };
-
-  const scrollNext = () => {
-    emblaApi?.scrollNext();
-  };
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-    });
 
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+      if (!currentUser) {
         setSavedBooks([]);
         setFinishedBooks([]);
         return;
       }
 
-      const savedBooksRef = collection(db, "users", user.uid, "savedBooks");
+      try {
+        const savedBooksRef = collection(db, "users", currentUser.uid, "savedBooks");
+        const finishedBooksRef = collection(db, "users", currentUser.uid, "finishedBooks");
 
-      const finishedBooksRef = collection(
-        db,
-        "users",
-        user.uid,
-        "finishedBooks",
-      );
+        const savedSnapshot = await getDocs(savedBooksRef);
+        const finishedSnapshot = await getDocs(finishedBooksRef);
 
-      const savedSnapshot = await getDocs(savedBooksRef);
-      const finishedSnapshot = await getDocs(finishedBooksRef);
+        const books = savedSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      const books = savedSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+        const finished = finishedSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      const finished = finishedSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setSavedBooks(books);
-      setFinishedBooks(finished);
+        setSavedBooks(books);
+        setFinishedBooks(finished);
+      } catch (err) {
+        console.error("Error fetching library books:", err);
+      }
     });
 
     return () => unsubscribe();
@@ -79,14 +66,12 @@ export default function MyLibrary() {
     <div className="max-w-5xl w-full mx-auto py-6">
       <div className="px-10 w-full">
         <div className="relative w-full">
-          {!user ? ( // NOT LOGGED IN
+          {!user ? (
             <div className="flex flex-col items-center justify-center py-20">
               <img src="/assets/login.png" alt="Login" className="w-64 mb-6" />
-
               <h2 className="text-[#032b41] font-semibold mb-4">
                 Log in to your account to see your Saved and Finished books.
               </h2>
-
               <button
                 className="bg-[#2bd97c] cursor-pointer px-8 py-2 rounded text-[#032b41] font-medium transition-colors duration-300 hover:bg-[#20a65f]"
                 onClick={() => setLoginOpen(true)}
@@ -96,108 +81,74 @@ export default function MyLibrary() {
             </div>
           ) : (
             <>
-              <div className="text-xl font-bold text-[#032b41] mb-4">
-                Saved Books
-              </div>
+              <div className="text-xl font-bold text-[#032b41] mb-4">Saved Books</div>
+              <div className="font-extralight text-[#394547] mb-4">{savedBooks.length} items</div>
 
-              <div className="font-extralight text-[#394547] mb-4">
-                {savedBooks.length} items
-              </div>
-              <div ref={emblaRef} className="overflow-hidden mx-12">
-                <div className="flex">
-                  {savedBooks.length === 0 ? (
-                    <div className="text-[#6b757b] mb-8">
-                      You have no current books saved.
+              {savedBooks.length === 0 ? (
+                <div className="text-[#6b757b] mb-8">You have no current books saved.</div>
+              ) : (
+                <div className="relative mx-12 mb-8">
+                  <button
+                    type="button"
+                    onClick={scrollPrev}
+                    className="absolute -left-12 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#032b41]"
+                  >
+                    <FaChevronLeft />
+                  </button>
+
+                  {/* Single Embla Viewport */}
+                  <div ref={emblaRef} className="overflow-hidden">
+                    <div className="flex">
+                      {savedBooks.map((book) => (
+                        <Link
+                          href={`/book/${book.id}`}
+                          key={book.id}
+                          className="relative flex-[0_0_208px] px-4 py-3 rounded-sm"
+                        >
+                          {book.subscriptionRequired && (
+                            <div className="absolute top-0 right-4 z-10 bg-[#032b41] text-white text-[10px] font-semibold px-2 py-1 rounded-full">
+                              Premium
+                            </div>
+                          )}
+                          <figure className="w-44 h-44 mb-2">
+                            <img src={book.imageLink} alt={book.title} className="w-full h-full object-cover" />
+                          </figure>
+                          <div className="text-base font-bold text-[#032b41] mb-1 truncate">{book.title}</div>
+                          <div className="text-sm text-[#6b757b] font-light mb-1 truncate">{book.author}</div>
+                          <div className="text-sm text-[#394547] mb-2 truncate">{book.subTitle}</div>
+                          <div className="flex gap-3">
+                            <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
+                              <CiClock2 className="w-4 h-4" />
+                              <div>03:24</div>
+                            </div>
+                            <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
+                              <CiStar className="w-4 h-4" />
+                              <div>{book.averageRating}</div>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                  ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={scrollPrev}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10
-                 w-10 h-10 rounded-full bg-white shadow-md
-                 flex items-center justify-center
-                 text-[#032b41]"
-                      >
-                        <FaChevronLeft />
-                      </button>
+                  </div>
 
-                      <div ref={emblaRef} className="overflow-hidden mx-12">
-                        <div className="flex">
-                          {savedBooks.map((book) => (
-                            <Link
-                              href={`/book/${book.id}`}
-                              key={book.id}
-                              className="relative flex-[0_0_208px] px-8 py-3 rounded-sm"
-                            >
-                              {book.subscriptionRequired && (
-                                <div className="absolute top-0 right-8 z-10 bg-[#032b41] text-white text-[10px] font-semibold px-2 py-1 rounded-full">
-                                  Premium
-                                </div>
-                              )}
-                              <figure className="w-44 h-44">
-                                <img
-                                  src={book.imageLink}
-                                  alt={book.title}
-                                  className="w-full h-full"
-                                />
-                              </figure>
-
-                              <div className="text-base font-bold text-[#032b41] mb-2">
-                                {book.title}
-                              </div>
-
-                              <div className="text-sm text-[#6b757b] font-light mb-2">
-                                {book.author}
-                              </div>
-
-                              <div className="text-sm text-[#394547] mb-2">
-                                {book.subTitle}
-                              </div>
-
-                              <div className="flex gap-2">
-                                <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
-                                  <CiClock2 className="w-4 h-4" />
-                                  <div>03:24</div>
-                                </div>
-
-                                <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
-                                  <CiStar className="w-4 h-4" />
-                                  <div>{book.averageRating}</div>
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={scrollNext}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10
-                 w-10 h-10 rounded-full bg-white shadow-md
-                 flex items-center justify-center
-                 text-[#032b41]"
-                      >
-                        <FaChevronRight />
-                      </button>
-                    </>
-                  )}
+                  <button
+                    type="button"
+                    onClick={scrollNext}
+                    className="absolute -right-12 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-[#032b41]"
+                  >
+                    <FaChevronRight />
+                  </button>
                 </div>
-              </div>
-              <div className="text-xl font-bold text-[#032b41] mb-4">
-                Finished
-              </div>
-              <div className="font-extralight text-[#394547] mb-4">
-                {finishedBooks.length} items
-              </div>
+              )}
+
+              <div className="text-xl font-bold text-[#032b41] mb-4">Finished</div>
+              <div className="font-extralight text-[#394547] mb-4">{finishedBooks.length} items</div>
 
               {finishedBooks.length === 0 ? (
-                <div className="text-[#6b757b]">
-                  You have no finished books yet.
-                </div>
+                <div className="text-[#6b757b]">You have no finished books yet.</div>
               ) : (
                 finishedBooks.map((book) => (
-                  <Link href={`/book/${book.id}`} key={book.id}>
+                  <Link href={`/book/${book.id}`} key={book.id} className="block mb-2 text-[#032b41]">
                     {book.title}
                   </Link>
                 ))
