@@ -62,10 +62,8 @@ const LoginModal = ({
               try {
                 if (creatingAccount) {
                   await createUserWithEmailAndPassword(auth, email, password);
-                  console.log("Account created!");
                 } else {
                   await signInWithEmailAndPassword(auth, email, password);
-                  console.log("Email login successful!");
                 }
 
                 setLoginOpen(false);

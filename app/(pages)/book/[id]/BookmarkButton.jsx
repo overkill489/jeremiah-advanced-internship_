@@ -12,7 +12,6 @@ export default function BookmarkButton({ book, bookId }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Listen for Firebase auth readiness
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       

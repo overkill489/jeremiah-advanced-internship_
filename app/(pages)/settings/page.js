@@ -1,34 +1,59 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/app/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/app/firebase";
 import { useLogin } from "@/app/context/AuthContext";
+import Link from "next/link";
+import { FaSpinner } from "react-icons/fa";
 
 export default function Settings() {
-  const { setLoginOpen } = useLogin();
-  const [user, setUser] = useState(null);
+  const { setLoginOpen, user, authLoading } = useLogin();
+
+  const [subscription, setSubscription] = useState("basic");
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+
   const [loading, setLoading] = useState(true);
 
-  // We'll change this later when your subscription system is connected
-  const [subscription, setSubscription] = useState("premium");
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+  if (authLoading) return;
 
-    return () => unsubscribe();
-  }, []);
+  const getSubscription = async () => {
+    if (!user) {
+      setSubscription("basic");
+      setSubscriptionLoading(false);
+      return;
+    }
 
-  if (loading) {
-    return (
-      <div className="max-w-5xl w-full mx-auto py-6">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+
+        setSubscription(userData.subscription || "basic");
+      } else {
+        setSubscription("basic");
+      }
+    } catch (error) {
+      console.error("Error getting subscription:", error);
+      setSubscription("basic");
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  getSubscription();
+}, [user, authLoading]);
+
+  if (authLoading || subscriptionLoading) {
+  return (
+    <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center">
+      <FaSpinner className="h-10 w-10 animate-spin text-[#2bd97c]" />
+    </div>
+  );
+}
 
   return (
     <div className="max-w-5xl w-full mx-auto py-6 px-4">
@@ -43,8 +68,8 @@ export default function Settings() {
             </h2>
 
             <button
-              className="bg-[#2bd97c] cursor-pointer px-8 py-2 rounded text-[#032b41] font-medium transition-colors duration-300 hover:bg-[#20a65f]"
               onClick={() => setLoginOpen(true)}
+              className="bg-[#2bd97c] cursor-pointer px-8 py-2 rounded text-[#032b41] font-medium transition-colors duration-300 hover:bg-[#20a65f]"
             >
               Login
             </button>
@@ -52,33 +77,34 @@ export default function Settings() {
         ) : (
           // LOGGED IN
           <>
-            <div className="text-left border-b border-[#e1e7ea] pb-4">
+            <div className="text-2xl font-bold text-[#032b41] text-left border-b border-[#e1e7ea] pb-4">
               Settings
             </div>
+
             <div className="py-8">
-              {/* Subscription */}
-              <div className="mb-8">
+              {/* SUBSCRIPTION */}
+              <div className="border-b border-[#e1e7ea] pb-8 mb-8">
                 <h2 className="text-[#032b41] font-semibold mb-3">
                   Your Subscription plan
                 </h2>
 
                 <p className="text-[#032b41] mb-3">
                   {subscription === "basic" && "Basic"}
-                  {subscription === "premium" && "Premium"}
-                  {subscription === "premium-plus" && "Premium-plus"}
+                  {subscription === "premium" && "premium"}
+                  {subscription === "premium-plus" && "premium-plus"}
                 </p>
 
                 {subscription === "basic" && (
-                  <a
-                    href="https://summarist.vercel.app/choose-plan"
-                    className="inline-block bg-[#2bd97c] px-5 py-2 rounded text-[#032b41] font-medium"
+                  <Link
+                    href="/choose-plan"
+                    className="inline-block bg-[#2bd97c] px-5 py-2 rounded text-[#032b41] font-medium transition-colors duration-300 hover:bg-[#20a65f]"
                   >
                     Upgrade to Premium
-                  </a>
+                  </Link>
                 )}
               </div>
 
-              {/* Email */}
+              {/* EMAIL */}
               <div>
                 <h2 className="text-[#032b41] font-semibold mb-3">Email</h2>
 

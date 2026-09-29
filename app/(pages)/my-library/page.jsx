@@ -3,18 +3,18 @@
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "@/app/firebase";
+import { db } from "@/app/firebase";
 import Link from "next/link";
 import { CiClock2, CiStar } from "react-icons/ci";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaSpinner } from "react-icons/fa";
 import { useLogin } from "@/app/context/AuthContext";
 
 export default function MyLibrary() {
-  const { setLoginOpen } = useLogin();
-  const [user, setUser] = useState(null);
+  const { setLoginOpen, user, authLoading } = useLogin();
+
   const [savedBooks, setSavedBooks] = useState([]);
   const [finishedBooks, setFinishedBooks] = useState([]);
+  const [libraryLoading, setLibraryLoading] = useState(true);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -26,18 +26,27 @@ export default function MyLibrary() {
   const scrollNext = () => emblaApi?.scrollNext();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+    if (authLoading) return;
 
-      if (!currentUser) {
+    const fetchLibrary = async () => {
+      if (!user) {
         setSavedBooks([]);
         setFinishedBooks([]);
+        setLibraryLoading(false);
         return;
       }
 
+      setLibraryLoading(true);
+
       try {
-        const savedBooksRef = collection(db, "users", currentUser.uid, "savedBooks");
-        const finishedBooksRef = collection(db, "users", currentUser.uid, "finishedBooks");
+        const savedBooksRef = collection(db, "users", user.uid, "savedBooks");
+
+        const finishedBooksRef = collection(
+          db,
+          "users",
+          user.uid,
+          "finishedBooks",
+        );
 
         const savedSnapshot = await getDocs(savedBooksRef);
         const finishedSnapshot = await getDocs(finishedBooksRef);
@@ -56,11 +65,21 @@ export default function MyLibrary() {
         setFinishedBooks(finished);
       } catch (err) {
         console.error("Error fetching library books:", err);
+      } finally {
+        setLibraryLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
-  }, []);
+    fetchLibrary();
+  }, [user, authLoading]);
+
+  if (authLoading || libraryLoading) {
+    return (
+      <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center">
+        <FaSpinner className="h-10 w-10 animate-spin text-[#2bd97c]" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl w-full mx-auto py-6">
@@ -81,11 +100,17 @@ export default function MyLibrary() {
             </div>
           ) : (
             <>
-              <div className="text-xl font-bold text-[#032b41] mb-4">Saved Books</div>
-              <div className="font-extralight text-[#394547] mb-4">{savedBooks.length} items</div>
+              <div className="text-xl font-bold text-[#032b41] mb-4">
+                Saved Books
+              </div>
+              <div className="font-extralight text-[#394547] mb-4">
+                {savedBooks.length} items
+              </div>
 
               {savedBooks.length === 0 ? (
-                <div className="text-[#6b757b] mb-8">You have no current books saved.</div>
+                <div className="text-[#6b757b] mb-8">
+                  You have no current books saved.
+                </div>
               ) : (
                 <div className="relative mx-12 mb-8">
                   <button
@@ -111,11 +136,21 @@ export default function MyLibrary() {
                             </div>
                           )}
                           <figure className="w-44 h-44 mb-2">
-                            <img src={book.imageLink} alt={book.title} className="w-full h-full object-cover" />
+                            <img
+                              src={book.imageLink}
+                              alt={book.title}
+                              className="w-full h-full object-cover"
+                            />
                           </figure>
-                          <div className="text-base font-bold text-[#032b41] mb-1 truncate">{book.title}</div>
-                          <div className="text-sm text-[#6b757b] font-light mb-1 truncate">{book.author}</div>
-                          <div className="text-sm text-[#394547] mb-2 truncate">{book.subTitle}</div>
+                          <div className="text-base font-bold text-[#032b41] mb-1 truncate">
+                            {book.title}
+                          </div>
+                          <div className="text-sm text-[#6b757b] font-light mb-1 truncate">
+                            {book.author}
+                          </div>
+                          <div className="text-sm text-[#394547] mb-2 truncate">
+                            {book.subTitle}
+                          </div>
                           <div className="flex gap-3">
                             <div className="flex items-center gap-1 text-sm font-light text-[#6b757b]">
                               <CiClock2 className="w-4 h-4" />
@@ -141,14 +176,24 @@ export default function MyLibrary() {
                 </div>
               )}
 
-              <div className="text-xl font-bold text-[#032b41] mb-4">Finished</div>
-              <div className="font-extralight text-[#394547] mb-4">{finishedBooks.length} items</div>
+              <div className="text-xl font-bold text-[#032b41] mb-4">
+                Finished
+              </div>
+              <div className="font-extralight text-[#394547] mb-4">
+                {finishedBooks.length} items
+              </div>
 
               {finishedBooks.length === 0 ? (
-                <div className="text-[#6b757b]">You have no finished books yet.</div>
+                <div className="text-[#6b757b]">
+                  You have no finished books yet.
+                </div>
               ) : (
                 finishedBooks.map((book) => (
-                  <Link href={`/book/${book.id}`} key={book.id} className="block mb-2 text-[#032b41]">
+                  <Link
+                    href={`/book/${book.id}`}
+                    key={book.id}
+                    className="block mb-2 text-[#032b41]"
+                  >
                     {book.title}
                   </Link>
                 ))

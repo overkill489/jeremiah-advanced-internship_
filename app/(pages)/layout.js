@@ -17,11 +17,11 @@ import { AuthProvider } from "../context/AuthContext";
 import LoggedIn from "../components/LoggedIn";
 import SideBar from "../components/SideBar";
 import SearchBar from "../components/SearchBar";
-import { userAgentFromString } from "next/server";
 
 const AppLayout = ({ children }) => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [creatingAccount, setCreatingAccount] = useState(false);
@@ -34,18 +34,18 @@ const AppLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+    setAuthLoading(false);
+  });
 
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+}, []);
 
   const handleGuestLogin = async () => {
     try {
       await signInAnonymously(auth);
       setLoginOpen(false);
-      console.log("Guest logged in!");
       router.push("/for-you");
     } catch (error) {
       console.log(error);
@@ -59,7 +59,6 @@ const AppLayout = ({ children }) => {
       await signInWithPopup(auth, provider);
       setLoginOpen(false);
       router.push("/for-you");
-      console.log("Google login successful!");
     } catch (error) {
       console.log(error);
     }
@@ -87,12 +86,12 @@ const AppLayout = ({ children }) => {
 
       {!hideSecondaryLayout && <LoggedIn />}
 
-      <AuthProvider value={{ setLoginOpen, user }}>
-        {pathname !== "/" ? (
+      <AuthProvider value={{ setLoginOpen, user, authLoading }}>
+        {pathname !== "/" && pathname !== "/choose-plan" ? (
           <>
             <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} auth={auth} />
 
-            <div className="ml-[200px]">
+            <div className="ml-0 lg:ml-[200px]">
               <SearchBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
               {children}
             </div>

@@ -71,7 +71,7 @@ export default function SearchBar({ isOpen, setIsOpen }) {
 
             {/* Search Results */}
             {search && (
-              <div className="absolute top-12 right-0 w-full bg-white border border-[#e1e7ea] rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+              <div className="top-12 right-0 w-full bg-white border border-[#e1e7ea] rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
                 {/* Loading */}
                 {loading && (
                   <div className="p-4 text-sm text-[#6b757b]">
